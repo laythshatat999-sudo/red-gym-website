@@ -50,6 +50,18 @@ export const imageManifest = [
     "blurDataURL": "data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAAAQBACdASoQABQAPxFysFAsJqSisAgBgCIJbAC7MoADTszDbKdPBDrRiAD+6+3s0TQM44o9dgy+qU2A/fN38t6zETgxPdIzgVYrTUHneC6dtATRdKaAc22dB8Xe25Zi/tXnndKVtGvR6hc/QC0miHRu7l163Lr98X7tbGtf9+focpYGeoAAAA=="
   },
   {
+    "baseName": "offers",
+    "category": "disciplines",
+    "originalDims": "1856×2304",
+    "blurDataURL": "data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAABQBACdASoQABQAPxFysFAsJqSisAgBgCIJaACdAywBimfp5h0FAeobsHsAAP7jdrz1JPVg0H4jp1tEUps189dpwKxo+CouHi0vju6ZuQ0U8l340ViCzMWRelBmQpHF3lvJo/5L8W59SkFFcRu0oH/kLsqFpFiLNQWnOaLgNY94mYYAn0GSoAAA"
+  },
+  {
+    "baseName": "parking",
+    "category": "disciplines",
+    "originalDims": "1856×2304",
+    "blurDataURL": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADwAwCdASoQABQAPxFysFAsJqSisAgBgCIJQBhQAyS1kAzvBXxIf/IAAP7uoTBJIdm3xs0fsu3oGxIMDZIDrX8N6+i3PCe4tFt5zRYcvjXwE0Wi1nfr0vL73R1kdx1P7peh7RR5KyeCcUfHAAA="
+  },
+  {
     "baseName": "IMG_1384 copy",
     "category": "classes",
     "originalDims": "4160×6240",

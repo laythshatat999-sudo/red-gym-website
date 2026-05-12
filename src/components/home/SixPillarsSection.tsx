@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowUpRight, Car, Tag } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { DISCIPLINES, FACILITY, CLASSES, VIDEO_POSTERS } from '@/lib/image-map';
 
 interface Pillar {
@@ -11,8 +11,7 @@ interface Pillar {
   title: string;
   description: string;
   href: string;
-  image?: string;
-  icon?: 'parking' | 'offer';
+  image: string;
 }
 
 const PILLARS: Pillar[] = [
@@ -49,14 +48,14 @@ const PILLARS: Pillar[] = [
     title: 'Free Parking',
     description: 'Members-only complimentary parking in Vista Tower. A real advantage in Barsha Heights, Dubai.',
     href: '/parking',
-    icon: 'parking',
+    image: DISCIPLINES.parking,
   },
   {
     number: '06',
     title: 'Member Offers',
     description: '500 AED voucher for new members. Couples, friends, and groups discounts available.',
     href: '/offers',
-    icon: 'offer',
+    image: DISCIPLINES.offers,
   },
 ];
 
@@ -96,30 +95,17 @@ export default function SixPillarsSection() {
                 href={pillar.href}
                 className="group relative block overflow-hidden bg-[#141414] aspect-[4/5] hover:cursor-pointer"
               >
-                {/* Image or icon background */}
-                {pillar.image ? (
-                  <div className="absolute inset-0">
-                    <Image
-                      src={pillar.image}
-                      alt={pillar.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
-                  </div>
-                ) : (
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#141414] to-[#0A0A0A] flex items-center justify-center">
-                    {pillar.icon === 'parking' && (
-                      <Car className="w-32 h-32 text-[#E11D2A]/20 group-hover:text-[#E11D2A]/40 transition-colors duration-500" strokeWidth={1} />
-                    )}
-                    {pillar.icon === 'offer' && (
-                      <Tag className="w-32 h-32 text-[#E11D2A]/20 group-hover:text-[#E11D2A]/40 transition-colors duration-500" strokeWidth={1} />
-                    )}
-                  </div>
-                )}
+                <div className="absolute inset-0">
+                  <Image
+                    src={pillar.image}
+                    alt={pillar.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                </div>
 
-                {/* Content */}
                 <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between text-white">
                   <div className="flex items-start justify-between">
                     <span className="font-display text-xl text-[#E11D2A]">{pillar.number}</span>

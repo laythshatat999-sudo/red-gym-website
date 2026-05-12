@@ -9,7 +9,10 @@
       "Bash(curl -sS -o /dev/null -w \"  HTTP %{http_code}  size=%{size_download}B\\\\n\" \"http://localhost:3000/images/classes/IMG_1384%20copy.webp\")",
       "Bash(curl -sS -o /dev/null -w \"  HTTP %{http_code}  size=%{size_download}B\\\\n\" \"http://localhost:3000/_next/image?url=%2Fimages%2Fclasses%2FIMG_1384%2520copy.webp&w=1200&q=75\")",
       "Bash(curl -sS -o /dev/null -w \"  HTTP %{http_code}  size=%{size_download}B\\\\n\" \"http://localhost:3000/images/hero/red%20%20ggffdd-Cover.webp\")",
-      "Bash(curl -sS -o /dev/null -w \"  HTTP %{http_code}  size=%{size_download}B\\\\n\" \"http://localhost:3000/images/og/logo-icon-256.png\")"
+      "Bash(curl -sS -o /dev/null -w \"  HTTP %{http_code}  size=%{size_download}B\\\\n\" \"http://localhost:3000/images/og/logo-icon-256.png\")",
+      "Bash(curl -sS -o /dev/null -w \"GET / → HTTP %{http_code} in %{time_total}s\\\\n\" http://localhost:3000/)",
+      "Bash(curl -sS -o /dev/null -w \"  /images/disciplines/parking.webp → HTTP %{http_code}\\\\n\" http://localhost:3000/images/disciplines/parking.webp)",
+      "Bash(curl -sS -o /dev/null -w \"  /images/disciplines/offers.webp  → HTTP %{http_code}\\\\n\" http://localhost:3000/images/disciplines/offers.webp)"
     ]
   }
 }

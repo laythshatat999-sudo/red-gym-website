@@ -50,19 +50,16 @@ export default function Navigation() {
             <Link
               href="/"
               aria-label="Red Gym home"
-              className="flex items-center gap-3 group"
+              className="flex items-center"
             >
               <Image
-                src={LOGO.iconSmall}
+                src={LOGO.icon}
                 alt="Red Gym"
-                width={40}
-                height={40}
+                width={56}
+                height={56}
                 priority
-                className="w-9 h-9 md:w-10 md:h-10"
+                className="w-12 h-12 md:w-14 md:h-14"
               />
-              <span className="font-display text-xl md:text-2xl text-white tracking-wide hidden sm:inline">
-                RED <span className="text-[#E11D2A]">GYM</span>
-              </span>
             </Link>
 
             {/* Desktop nav */}
@@ -115,18 +112,15 @@ export default function Navigation() {
                 href="/"
                 onClick={() => setOpen(false)}
                 aria-label="Red Gym home"
-                className="flex items-center gap-3"
+                className="flex items-center"
               >
                 <Image
-                  src={LOGO.iconSmall}
+                  src={LOGO.icon}
                   alt="Red Gym"
-                  width={36}
-                  height={36}
-                  className="w-9 h-9"
+                  width={56}
+                  height={56}
+                  className="w-12 h-12 md:w-14 md:h-14"
                 />
-                <span className="font-display text-xl text-white tracking-wide">
-                  RED <span className="text-[#E11D2A]">GYM</span>
-                </span>
               </Link>
               <button
                 onClick={() => setOpen(false)}

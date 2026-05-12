@@ -84,4 +84,6 @@ export const DISCIPLINES = {
   yoga:       '/images/disciplines/Gemini_Generated_Image_ridxmpridxmpridx.webp',  // ⚠️ expect: woman in purple yoga set
   zumba:      '/images/disciplines/Gemini_Generated_Image_sy6q1ysy6q1ysy6q.webp',  // ⚠️ expect: teal-outfit instructor leading class
   spinning:   '/images/disciplines/Gemini_Generated_Image_x5pr38x5pr38x5pr.webp',  // ⚠️ expect: dark red atmospheric spin class
+  parking:    '/images/disciplines/parking.webp',                                   // premium parking garage with black Range Rover, red+white neon
+  offers:     '/images/disciplines/offers.webp',                                    // warm reception desk scene, receptionist handing membership card
 } as const;
