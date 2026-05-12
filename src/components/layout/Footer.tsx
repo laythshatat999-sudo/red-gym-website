@@ -1,6 +1,8 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { MapPin, Phone, Mail, Clock } from 'lucide-react';
 import { BRAND, WHATSAPP_CTA } from '@/lib/brand';
+import { LOGO } from '@/lib/image-map';
 
 // Inline brand SVGs — lucide-react 1.x drops trademarked brand icons.
 function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -27,9 +29,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8 pb-16 border-b border-white/5">
           {/* Brand */}
           <div className="md:col-span-1">
-            <h3 className="font-display text-3xl text-white tracking-wide mb-4">
-              RED <span className="text-[#E11D2A]">GYM</span>
-            </h3>
+            <Image
+              src={LOGO.icon}
+              alt="Red Gym"
+              width={96}
+              height={96}
+              className="mb-4 w-20 h-20 md:w-24 md:h-24"
+            />
             <p className="text-white/60 text-sm leading-relaxed mb-6">
               {BRAND.tagline}
             </p>

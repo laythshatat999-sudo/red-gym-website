@@ -62,6 +62,15 @@ export const CLASSES = {
   muayThai: '/images/classes/IMG_1384 copy.webp',
 } as const;
 
+export const LOGO = {
+  full: '/images/og/logo-full-1200.png',
+  fullSmall: '/images/og/logo-full-600.png',
+  icon: '/images/og/logo-icon-256.png',
+  iconSmall: '/images/og/logo-icon-96.png',
+  iconNav: '/images/og/logo-icon-48.png',
+  ogImage: '/images/og/og-image.jpg',
+} as const;
+
 // ⚠️ Map by visual content. Best-guess assignment below is by alphabetical hash order.
 // Each discipline needs one Gemini file; muayThai reuses the real CLASSES photo.
 // To verify: open each file and confirm the visual matches the comment.

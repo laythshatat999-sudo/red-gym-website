@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { WHATSAPP_CTA } from '@/lib/brand';
+import { LOGO } from '@/lib/image-map';
 
 const NAV_LINKS = [
   { href: '/disciplines', label: 'Disciplines' },
@@ -48,9 +50,17 @@ export default function Navigation() {
             <Link
               href="/"
               aria-label="Red Gym home"
-              className="flex items-center gap-2 group"
+              className="flex items-center gap-3 group"
             >
-              <span className="font-display text-2xl md:text-3xl text-white tracking-wide">
+              <Image
+                src={LOGO.iconSmall}
+                alt="Red Gym"
+                width={40}
+                height={40}
+                priority
+                className="w-9 h-9 md:w-10 md:h-10"
+              />
+              <span className="font-display text-xl md:text-2xl text-white tracking-wide hidden sm:inline">
                 RED <span className="text-[#E11D2A]">GYM</span>
               </span>
             </Link>
@@ -101,9 +111,23 @@ export default function Navigation() {
             className="fixed inset-0 z-50 bg-[#0A0A0A] lg:hidden"
           >
             <div className="flex items-center justify-between h-16 px-5 border-b border-white/5">
-              <span className="font-display text-2xl text-white tracking-wide">
-                RED <span className="text-[#E11D2A]">GYM</span>
-              </span>
+              <Link
+                href="/"
+                onClick={() => setOpen(false)}
+                aria-label="Red Gym home"
+                className="flex items-center gap-3"
+              >
+                <Image
+                  src={LOGO.iconSmall}
+                  alt="Red Gym"
+                  width={36}
+                  height={36}
+                  className="w-9 h-9"
+                />
+                <span className="font-display text-xl text-white tracking-wide">
+                  RED <span className="text-[#E11D2A]">GYM</span>
+                </span>
+              </Link>
               <button
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
