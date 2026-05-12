@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "process:images": "node scripts/process-images.mjs",
+    "process:videos": "node scripts/process-videos.mjs",
+    "process:all": "npm run process:images && npm run process:videos"
   },
   "dependencies": {
     "framer-motion": "^12.38.0",

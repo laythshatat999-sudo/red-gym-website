@@ -1,0 +1,59 @@
+import { execSync } from 'child_process';
+import { existsSync, mkdirSync } from 'fs';
+import path from 'path';
+
+// Source file names mapped to actual files in source-assets/videos/
+const SOURCE_HERO = 'source-assets/videos/hero/redgym_video (1).mp4';
+const SOURCE_STUDIO = 'source-assets/videos/studio-rental/red rent.mp4';
+
+function ensureDir(dir) {
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+}
+
+function run(cmd) {
+  console.log(`  $ ${cmd.replace(/\s+/g, ' ').trim()}`);
+  execSync(cmd, { stdio: 'pipe' });
+}
+
+console.log('🎬 Processing videos...\n');
+
+ensureDir('public/videos/hero');
+ensureDir('public/videos/sections');
+ensureDir('public/videos/posters');
+
+// === HERO VIDEO: 0-8s clip optimized for mobile ===
+if (existsSync(SOURCE_HERO)) {
+  console.log('📹 Hero loop (mobile, 8s, <2MB)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO}" -ss 00:00:00 -t 8 -vcodec libx264 -crf 30 -preset slow -vf "scale=540:960:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/hero/hero-loop-mobile.mp4"`);
+
+  console.log('📹 Hero loop (WebM fallback)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO}" -ss 00:00:00 -t 8 -c:v libvpx-vp9 -crf 35 -b:v 0 -vf "scale=540:960:flags=lanczos" -an -row-mt 1 "public/videos/hero/hero-loop-mobile.webm"`);
+
+  console.log('🖼️  Hero poster image...');
+  run(`ffmpeg -y -i "${SOURCE_HERO}" -ss 00:00:01 -vframes 1 -vf "scale=720:1280" -q:v 90 "public/videos/posters/hero-poster.webp"`);
+
+  // Section clips from same source
+  console.log('📹 Section: Strength Zone (0:25-0:32)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO}" -ss 00:00:25 -t 7 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-strength.mp4"`);
+
+  console.log('📹 Section: Combat Zone (0:32-0:40)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO}" -ss 00:00:32 -t 8 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-combat.mp4"`);
+
+  console.log('📹 Section: Studio Classes (0:40-0:46)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO}" -ss 00:00:40 -t 6 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-studio.mp4"`);
+} else {
+  console.warn('⚠️  Hero source video not found, skipping hero processing');
+}
+
+// === STUDIO RENTAL VIDEO ===
+if (existsSync(SOURCE_STUDIO)) {
+  console.log('📹 Studio Rental video...');
+  run(`ffmpeg -y -i "${SOURCE_STUDIO}" -vcodec libx264 -crf 30 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/studio-rental.mp4"`);
+
+  console.log('🖼️  Studio Rental poster...');
+  run(`ffmpeg -y -i "${SOURCE_STUDIO}" -ss 00:00:01 -vframes 1 -vf "scale=720:1280" -q:v 90 "public/videos/posters/studio-rental-poster.webp"`);
+} else {
+  console.warn('⚠️  Studio rental source video not found, skipping');
+}
+
+console.log('\n✅ Video processing complete');

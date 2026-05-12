@@ -3,7 +3,8 @@
     "allow": [
       "PowerShell($PWD.Path; Test-Path source-assets; if \\(Test-Path source-assets\\) { Get-ChildItem source-assets -Recurse -Directory | Select-Object FullName })",
       "PowerShell($dirs = @\\('source-assets\\\\images\\\\hero','source-assets\\\\images\\\\facility','source-assets\\\\images\\\\classes','source-assets\\\\images\\\\ai-generated','source-assets\\\\images\\\\coaches','source-assets\\\\videos\\\\hero','source-assets\\\\videos\\\\studio-rental'\\); foreach \\($d in $dirs\\) { $files = Get-ChildItem $d -File -ErrorAction SilentlyContinue; Write-Output \\(\"{0}: {1} files\" -f $d, $files.Count\\); foreach \\($f in $files\\) { Write-Output \\(\"  - {0} \\({1:N1} MB\\)\" -f $f.Name, \\($f.Length/1MB\\)\\) } })",
-      "PowerShell(Move-Item -Destination . -Force)"
+      "PowerShell(Move-Item -Destination . -Force)",
+      "PowerShell(Get-ChildItem public -Recurse -Directory | ForEach-Object { Write-Output $_.FullName.Replace\\($PWD.Path + '\\\\',''\\) }; Write-Output \"---\"; Test-Path scripts)"
     ]
   }
 }
