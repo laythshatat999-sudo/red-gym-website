@@ -1,8 +1,23 @@
-// Centralized image paths for components to import.
+// Centralized image paths — every entry must resolve to a file that exists
+// on disk under /public/images. If source-assets filenames change, update
+// the matching string here.
+//
+// NOTE: Filenames preserve the actual on-disk casing/spacing (e.g. "red  ggffdd-Cover"
+// has two spaces, "IMG_1384 copy" has a space before "copy"). Next.js Image and
+// browser <img src> handle URL-encoding automatically, but if you ever construct
+// these URLs manually pass them through encodeURI().
+//
+// ⚠️ LAYTH — VISUAL VERIFICATION NEEDED ⚠️
+// The Gemini AI-generated → discipline mapping below is a best-guess based on
+// alphabetical order of the hash filenames (the only deterministic ordering
+// available). Open public/images/disciplines/*.webp in a file viewer and
+// confirm each visual matches the discipline key. Swap filenames here if any
+// mapping is wrong. Same applies to the FACILITY entries — IMG_2609/IMG_2613/
+// DSC01382/2024-01-01 (1) all need a visual eyeball check.
 
 export const HERO_IMAGES = {
-  desktop: '/images/hero/hero-strength-4k.webp',
-  desktopMobile: '/images/hero/hero-strength-4k-mobile.webp',
+  desktop: '/images/hero/red  ggffdd-Cover.webp',
+  desktopMobile: '/images/hero/red  ggffdd-Cover-mobile.webp',
 } as const;
 
 export const HERO_VIDEO = {
@@ -11,19 +26,24 @@ export const HERO_VIDEO = {
   poster: '/videos/posters/hero-poster.webp',
 } as const;
 
+// ⚠️ Verify which IMG_/DSC_ photo is which facility zone.
+// Current best-guesses are by file size (combat & strength tend to be photographed
+// in wider angles → larger files; studio shots are typically more contained).
 export const FACILITY = {
   combatZone: {
-    desktop: '/images/facility/combat-zone-heavy-bags.webp',
-    mobile: '/images/facility/combat-zone-heavy-bags-mobile.webp',
+    desktop: '/images/facility/IMG_2613.webp',          // ⚠️ verify: heavy bags / combat area
+    mobile: '/images/facility/IMG_2613-mobile.webp',
   },
   strengthZone: {
-    desktop: '/images/facility/strength-zone-hammer-machines.webp',
-    mobile: '/images/facility/strength-zone-hammer-machines-mobile.webp',
+    desktop: '/images/facility/IMG_2609.webp',          // ⚠️ verify: hammer-strength machines
+    mobile: '/images/facility/IMG_2609-mobile.webp',
   },
   studioPink: {
-    desktop: '/images/facility/studio-pink-neon.webp',
-    mobile: '/images/facility/studio-pink-neon-mobile.webp',
+    desktop: '/images/facility/DSC01382.webp',          // ⚠️ verify: pink-neon studio
+    mobile: '/images/facility/DSC01382-mobile.webp',
   },
+  // 4th facility photo — `2024-01-01 (1).webp` — exists but isn't slotted yet.
+  // Add an entry here if you want to surface it (e.g. cardio zone, lounge, etc.).
 } as const;
 
 export const SECTION_VIDEOS = {
@@ -39,18 +59,20 @@ export const VIDEO_POSTERS = {
 } as const;
 
 export const CLASSES = {
-  muayThai: '/images/classes/muay-thai-class-action.webp',
+  muayThai: '/images/classes/IMG_1384 copy.webp',
 } as const;
 
-// AI-generated discipline images (output to /images/disciplines/)
+// ⚠️ Map by visual content. Best-guess assignment below is by alphabetical hash order.
+// Each discipline needs one Gemini file; muayThai reuses the real CLASSES photo.
+// To verify: open each file and confirm the visual matches the comment.
 export const DISCIPLINES = {
-  boxing: '/images/disciplines/boxing.webp',
-  mma: '/images/disciplines/mma.webp',
-  bjj: '/images/disciplines/bjj.webp',
-  muayThai: '/images/classes/muay-thai-class-action.webp',
-  kickboxing: '/images/disciplines/kickboxing.webp',
-  crossfit: '/images/disciplines/crossfit.webp',
-  yoga: '/images/disciplines/yoga.webp',
-  zumba: '/images/disciplines/zumba.webp',
-  spinning: '/images/disciplines/spinning.webp',
+  boxing:     '/images/disciplines/Gemini_Generated_Image_4akgga4akgga4akg.webp',  // ⚠️ expect: shirtless man on heavy bag
+  mma:        '/images/disciplines/Gemini_Generated_Image_bfh8rkbfh8rkbfh8.webp',  // ⚠️ expect: ground grappling with Burj Khalifa
+  bjj:        '/images/disciplines/Gemini_Generated_Image_cdvli1cdvli1cdvl.webp',  // ⚠️ expect: white gis BJJ training
+  muayThai:   '/images/classes/IMG_1384 copy.webp',                                 // real Muay Thai photo (reused from CLASSES)
+  kickboxing: '/images/disciplines/Gemini_Generated_Image_l639hjl639hjl639.webp',  // ⚠️ expect: woman with braids, high kick
+  crossfit:   '/images/disciplines/Gemini_Generated_Image_nzyfjfnzyfjfnzyf.webp',  // ⚠️ expect: woman with kettlebell on red runway
+  yoga:       '/images/disciplines/Gemini_Generated_Image_ridxmpridxmpridx.webp',  // ⚠️ expect: woman in purple yoga set
+  zumba:      '/images/disciplines/Gemini_Generated_Image_sy6q1ysy6q1ysy6q.webp',  // ⚠️ expect: teal-outfit instructor leading class
+  spinning:   '/images/disciplines/Gemini_Generated_Image_x5pr38x5pr38x5pr.webp',  // ⚠️ expect: dark red atmospheric spin class
 } as const;

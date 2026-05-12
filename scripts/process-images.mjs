@@ -26,36 +26,42 @@ async function processImage(srcPath, category, filename) {
   const meta = await sharp(srcPath).metadata();
   console.log(`  → ${filename} (${meta.width}×${meta.height})`);
 
-  // Crop Gemini watermark if it's an ai-generated image (bottom-right ~60px)
-  let basePipeline = sharp(srcPath);
+  // For ai-generated images, composite a black patch over the Gemini watermark
+  // (bottom-right ~150px diamond logo area). Black matches the gym brand background
+  // so the patch is invisible against dark UI sections.
+  let sourceBuffer;
   if (category === 'ai-generated') {
-    const cropHeight = Math.max(0, meta.height - 80);
-    basePipeline = basePipeline.extract({
-      left: 0,
-      top: 0,
-      width: meta.width,
-      height: cropHeight,
-    });
+    const wmSize = Math.min(150, Math.floor(meta.width * 0.1));
+    const patchWidth = wmSize + 30;
+    const patchHeight = wmSize + 30;
+    const patchLeft = Math.max(0, meta.width - patchWidth);
+    const patchTop = Math.max(0, meta.height - patchHeight);
+
+    const blackPatch = Buffer.from(
+      `<svg width="${patchWidth}" height="${patchHeight}"><rect width="100%" height="100%" fill="#0A0A0A"/></svg>`
+    );
+
+    sourceBuffer = await sharp(srcPath)
+      .composite([{ input: blackPatch, top: patchTop, left: patchLeft }])
+      .toBuffer();
+  } else {
+    sourceBuffer = await sharp(srcPath).toBuffer();
   }
 
   for (const { w, suffix } of preset.sizes) {
-    // WebP version
-    await basePipeline
-      .clone()
+    await sharp(sourceBuffer)
       .resize(w, null, { withoutEnlargement: true })
       .webp({ quality: preset.quality })
       .toFile(path.join(outDir, `${baseName}${suffix}.webp`));
 
-    // AVIF version (smaller, modern browsers)
-    await basePipeline
-      .clone()
+    await sharp(sourceBuffer)
       .resize(w, null, { withoutEnlargement: true })
       .avif({ quality: preset.quality - 5 })
       .toFile(path.join(outDir, `${baseName}${suffix}.avif`));
   }
 
-  // Blur placeholder (base64 data URL)
-  const blurBuffer = await sharp(srcPath)
+  // Blur placeholder (from cleaned buffer)
+  const blurBuffer = await sharp(sourceBuffer)
     .resize(16)
     .webp({ quality: 30 })
     .toBuffer();
@@ -75,6 +81,11 @@ async function main() {
   const manifest = [];
 
   for (const category of categories) {
+    if (category === 'coaches') {
+      console.log(`⏭️  Skipping ${category}/ (Coaches page removed from plan)`);
+      continue;
+    }
+
     const catPath = path.join(SOURCE, category);
     const stats = await stat(catPath);
     if (!stats.isDirectory()) continue;
