@@ -56,7 +56,8 @@
       "Bash(curl -v --max-time 15 -o /dev/null https://red-gym-website.vercel.app/)",
       "Bash(timeout 15 openssl s_client -connect red-gym-website.vercel.app:443 -servername red-gym-website.vercel.app -brief)",
       "Bash(curl -sL --max-time 25 https://red-gym-website.vercel.app/ -o /tmp/live-home.html -w \"HTTP=%{http_code} bytes=%{size_download} time=%{time_total}s connect=%{time_connect}s tls=%{time_appconnect}s ttfb=%{time_starttransfer}s\\\\n\")",
-      "Bash(curl -sL --max-time 25 https://red-gym-website-4neb09mfg-layth-s-projects1.vercel.app/ -o /tmp/live-direct.html -w \"HTTP=%{http_code} bytes=%{size_download} time=%{time_total}s tls=%{time_appconnect}s\\\\n\")"
+      "Bash(curl -sL --max-time 25 https://red-gym-website-4neb09mfg-layth-s-projects1.vercel.app/ -o /tmp/live-direct.html -w \"HTTP=%{http_code} bytes=%{size_download} time=%{time_total}s tls=%{time_appconnect}s\\\\n\")",
+      "Bash(npx --yes vercel@latest list red-gym-website --yes)"
     ]
   }
 }

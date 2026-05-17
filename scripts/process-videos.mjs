@@ -2,9 +2,16 @@ import { execSync } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
 
 // Source files
-const SOURCE_HERO_NEW = 'source-assets/videos/hero/hero-source-46s.mp4';   // 15s, for hero loop + studio clip
+const SOURCE_HERO_NEW = 'source-assets/videos/hero/hero-source-46s.mp4';   // 15s, for hero loop
 const SOURCE_HERO_OLD = 'source-assets/videos/hero/hero-source-old.mp4';   // 46s, for strength + combat clips
-const SOURCE_STUDIO = 'source-assets/videos/studio-rental/red rent.mp4';   // standalone, untouched
+const SOURCE_STUDIO = 'source-assets/videos/studio-rental/red rent.mp4';   // drives inside-studio + studio-rental
+
+// iOS Safari autoplay-friendly H.264 settings.
+// Encoded with Main profile (NOT High), level 3.1, capped at 30fps, faststart on.
+// Background: iOS Safari's autoplay heuristic is conservative — High profile, >30fps,
+// or "unusual" media files often trigger autoplay refusal even when muted+playsinline
+// attributes are correct. Main + 30fps is the broad-compat sweet spot since iOS 8.
+const IOS_H264 = '-vcodec libx264 -profile:v main -level 3.1 -pix_fmt yuv420p -r 30 -movflags +faststart -an';
 
 function ensureDir(dir) {
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
@@ -23,10 +30,10 @@ ensureDir('public/videos/posters');
 
 // === HERO LOOP (mobile + WebM fallback) — from NEW 15s video ===
 if (existsSync(SOURCE_HERO_NEW)) {
-  console.log('📹 Hero loop mp4 (mobile, full 15s, ~540×960)...');
-  run(`ffmpeg -y -i "${SOURCE_HERO_NEW}" -vcodec libx264 -crf 30 -preset slow -vf "scale=540:960:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/hero/hero-loop-mobile.mp4"`);
+  console.log('📹 Hero loop mp4 (mobile, full 15s, ~540×960, iOS-safe H.264)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO_NEW}" ${IOS_H264} -crf 30 -preset slow -vf "scale=540:960:flags=lanczos" "public/videos/hero/hero-loop-mobile.mp4"`);
 
-  console.log('📹 Hero loop webm (VP9 fallback)...');
+  console.log('📹 Hero loop webm (VP9 fallback for desktop Chrome/Firefox)...');
   run(`ffmpeg -y -i "${SOURCE_HERO_NEW}" -c:v libvpx-vp9 -crf 35 -b:v 0 -vf "scale=540:960:flags=lanczos" -an -row-mt 1 "public/videos/hero/hero-loop-mobile.webm"`);
 
   console.log('🖼️  Hero poster image (frame at 0:01)...');
@@ -37,11 +44,11 @@ if (existsSync(SOURCE_HERO_NEW)) {
 
 // === SECTION CLIPS (Strength + Combat) — from OLD 46s video ===
 if (existsSync(SOURCE_HERO_OLD)) {
-  console.log('📹 Section: Strength Zone (0:08-0:14, Hammer Strength wide shot, 6s)...');
-  run(`ffmpeg -y -i "${SOURCE_HERO_OLD}" -ss 00:00:08 -t 6 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-strength.mp4"`);
+  console.log('📹 Section: Strength Zone (0:08-0:14, Hammer Strength wide shot, 6s, iOS-safe)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO_OLD}" -ss 00:00:08 -t 6 ${IOS_H264} -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" "public/videos/sections/inside-strength.mp4"`);
 
-  console.log('📹 Section: Combat Zone (0:36-0:42, heavy bags + red mat, 6s)...');
-  run(`ffmpeg -y -i "${SOURCE_HERO_OLD}" -ss 00:00:36 -t 6 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-combat.mp4"`);
+  console.log('📹 Section: Combat Zone (0:36-0:42, heavy bags + red mat, 6s, iOS-safe)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO_OLD}" -ss 00:00:36 -t 6 ${IOS_H264} -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" "public/videos/sections/inside-combat.mp4"`);
 } else {
   console.warn('⚠️  hero-source-old.mp4 not found, skipping strength + combat sections');
 }
@@ -50,9 +57,9 @@ if (existsSync(SOURCE_HERO_OLD)) {
 if (!existsSync(SOURCE_STUDIO)) {
   console.warn('⚠️  Studio rental source video not found, skipping');
 } else {
-  // Always-run: short InsideRedGym studio-floor clip (cheap re-encode).
-  console.log('📹 Section: Studio Floor (0:23-0:28, big R logo + heavy bags, 5s)...');
-  run(`ffmpeg -y -i "${SOURCE_STUDIO}" -ss 00:00:23 -t 5 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-studio.mp4"`);
+  // Always-run: short InsideRedGym studio-floor clip (cheap re-encode, iOS-safe).
+  console.log('📹 Section: Studio Floor (0:23-0:28, big R logo + heavy bags, 5s, iOS-safe)...');
+  run(`ffmpeg -y -i "${SOURCE_STUDIO}" -ss 00:00:23 -t 5 ${IOS_H264} -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" "public/videos/sections/inside-studio.mp4"`);
 
   // Skip guard for the large 30s Studio Rental page asset (expensive).
   const studioOutputsExist =
@@ -61,8 +68,8 @@ if (!existsSync(SOURCE_STUDIO)) {
   if (studioOutputsExist) {
     console.log('⏭️  Studio Rental large outputs already exist — skipping re-encode.');
   } else {
-    console.log('📹 Studio Rental video (full ~30s)...');
-    run(`ffmpeg -y -i "${SOURCE_STUDIO}" -vcodec libx264 -crf 30 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/studio-rental.mp4"`);
+    console.log('📹 Studio Rental video (full ~30s, iOS-safe)...');
+    run(`ffmpeg -y -i "${SOURCE_STUDIO}" ${IOS_H264} -crf 30 -preset slow -vf "scale=720:1280:flags=lanczos" "public/videos/sections/studio-rental.mp4"`);
 
     console.log('🖼️  Studio Rental poster...');
     run(`ffmpeg -y -i "${SOURCE_STUDIO}" -ss 00:00:01 -vframes 1 -vf "scale=720:1280" -q:v 90 "public/videos/posters/studio-rental-poster.webp"`);

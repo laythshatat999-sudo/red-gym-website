@@ -1,53 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { HERO_VIDEO } from '@/lib/image-map';
 import { WHATSAPP_CTA, BRAND } from '@/lib/brand';
 
 export default function HeroSection() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  // First-load autoplay reliability:
-  // On the very first visit the video element has no buffered data when
-  // useEffect fires, so video.play() rejects silently and iOS shows its
-  // "autoplay blocked" play-button overlay. On revisit the video is browser-
-  // cached and play() succeeds instantly. The fix: also call play() when the
-  // browser fires `canplay`/`loadeddata`, by which point readyState >= 3
-  // (HAVE_FUTURE_DATA) and playback can start.
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const tryPlay = () => {
-      video.play().catch(() => {
-        // play() can reject if not yet buffered or autoplay genuinely blocked;
-        // subsequent readiness events will retry, repeated play() on a playing
-        // video is a no-op.
-      });
-    };
-
-    // If the video is already ready (warm cache), play immediately.
-    if (video.readyState >= 3) tryPlay();
-
-    // Retry on every readiness signal (covers the first-load cold path).
-    video.addEventListener('canplay', tryPlay);
-    video.addEventListener('loadeddata', tryPlay);
-
-    return () => {
-      video.removeEventListener('canplay', tryPlay);
-      video.removeEventListener('loadeddata', tryPlay);
-    };
-  }, []);
-
+  // Pure native autoplay — no JS play() calls. The video file is encoded with
+  // iOS-friendly H.264 (Main profile, level 3.1, 30fps, faststart). With
+  // autoPlay + muted + playsInline + preload="auto" attributes, iOS Safari
+  // autoplays reliably on first load. Imperative video.play() calls were
+  // previously interfering with Safari's autoplay heuristic.
   return (
     <section className="relative h-screen w-full overflow-hidden bg-black">
       {/* Video background */}
       <div className="absolute inset-0 z-0">
         <video
-          ref={videoRef}
           src={HERO_VIDEO.mp4}
           poster={HERO_VIDEO.poster}
           autoPlay

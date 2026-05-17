@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { SECTION_VIDEOS, VIDEO_POSTERS } from '@/lib/image-map';
 
@@ -22,70 +21,12 @@ const ZONES = [
   },
 ];
 
-// Plays the clip when scrolled in, pauses when out.
-// First-load autoplay reliability: on cold cache the video isn't buffered when
-// intersection fires, so play() rejects and iOS shows its play-button overlay.
-// We track in-view state in a ref and also retry play() on canplay/loadeddata
-// events so playback kicks in the moment the video has enough data.
-function ZoneVideo({ src }: { src: string }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const inViewRef = useRef(false);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    const tryPlay = () => {
-      if (!inViewRef.current) return;
-      video.play().catch(() => {
-        // play() rejects if not buffered or autoplay blocked; retry on next
-        // readiness event. Repeated play() on a playing video is a no-op.
-      });
-    };
-
-    video.addEventListener('canplay', tryPlay);
-    video.addEventListener('loadeddata', tryPlay);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          inViewRef.current = entry.isIntersecting;
-          if (entry.isIntersecting) {
-            // Try immediately if already buffered; otherwise canplay will fire.
-            tryPlay();
-          } else {
-            video.pause();
-          }
-        });
-      },
-      { threshold: 0.25 }
-    );
-
-    observer.observe(video);
-
-    return () => {
-      observer.disconnect();
-      video.removeEventListener('canplay', tryPlay);
-      video.removeEventListener('loadeddata', tryPlay);
-    };
-  }, []);
-
-  return (
-    <video
-      ref={videoRef}
-      src={src}
-      poster={VIDEO_POSTERS.hero}
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="auto"
-      disablePictureInPicture
-      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-    />
-  );
-}
-
+// Pure native autoplay — no JS play() calls, no IntersectionObserver.
+// Videos are encoded with iOS-friendly H.264 (Main profile, 30fps, faststart).
+// Phase 6.1/6.2 attempted to coax iOS Safari's autoplay heuristic with imperative
+// play() and event listeners; those interfered with the heuristic and made things
+// worse. Trust the native autoplay attribute combo: autoPlay + muted + playsInline.
+// Three muted clips totaling ~2.3MB autoplay reliably on every modern mobile browser.
 export default function InsideRedGymSection() {
   return (
     <section className="bg-[#0A0A0A] py-24 md:py-40 border-t border-white/5">
@@ -118,7 +59,17 @@ export default function InsideRedGymSection() {
               className="group"
             >
               <div className="relative overflow-hidden bg-[#141414] aspect-[9/16] mb-5">
-                <ZoneVideo src={zone.video} />
+                <video
+                  src={zone.video}
+                  poster={VIDEO_POSTERS.hero}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
+                  disablePictureInPicture
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
               </div>
               <h3 className="font-display text-3xl md:text-4xl text-white mb-3 tracking-tight">{zone.title}</h3>
