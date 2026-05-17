@@ -51,8 +51,8 @@ if (!existsSync(SOURCE_STUDIO)) {
   console.warn('⚠️  Studio rental source video not found, skipping');
 } else {
   // Always-run: short InsideRedGym studio-floor clip (cheap re-encode).
-  console.log('📹 Section: Studio Floor (0:22-0:26, big R logo + heavy bags, 4s)...');
-  run(`ffmpeg -y -i "${SOURCE_STUDIO}" -ss 00:00:22 -t 4 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-studio.mp4"`);
+  console.log('📹 Section: Studio Floor (0:23-0:28, big R logo + heavy bags, 5s)...');
+  run(`ffmpeg -y -i "${SOURCE_STUDIO}" -ss 00:00:23 -t 5 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-studio.mp4"`);
 
   // Skip guard for the large 30s Studio Rental page asset (expensive).
   const studioOutputsExist =
