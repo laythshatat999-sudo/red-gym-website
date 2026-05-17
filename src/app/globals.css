@@ -28,4 +28,16 @@
     background: var(--color-red-primary);
     color: var(--color-white-pure);
   }
+  /* Keyboard-only focus ring on interactive elements.
+     Mouse clicks suppress it (focus-visible); keyboard navigation shows it. */
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--color-red-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
 }

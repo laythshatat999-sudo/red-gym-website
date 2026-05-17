@@ -88,7 +88,9 @@ export default function Navigation() {
               <button
                 onClick={() => setOpen(true)}
                 aria-label="Open menu"
-                className="lg:hidden p-2 text-white"
+                aria-expanded={open}
+                aria-controls="mobile-nav-drawer"
+                className="lg:hidden p-2 text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E11D2A] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0A0A]"
               >
                 <Menu className="w-6 h-6" />
               </button>
@@ -101,6 +103,10 @@ export default function Navigation() {
       <AnimatePresence>
         {open && (
           <motion.div
+            id="mobile-nav-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Main navigation"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

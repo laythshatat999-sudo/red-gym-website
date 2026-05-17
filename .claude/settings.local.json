@@ -28,7 +28,14 @@
       "Bash(curl -sS http://localhost:3000/robots.txt)",
       "Bash(curl -sS http://localhost:3000/llms.txt)",
       "Bash(curl -sS http://localhost:3000/)",
-      "Bash(curl -sS http://localhost:3000/disciplines/boxing)"
+      "Bash(curl -sS http://localhost:3000/disciplines/boxing)",
+      "Bash(curl -sS -o /dev/null -w \"  / → %{http_code}\\\\n\" --max-time 5 http://localhost:3000/)",
+      "Bash(curl -sS -o /dev/null -w \"  / → %{http_code}\\\\n\" --max-time 5 http://localhost:3001/)",
+      "Bash(curl -sS -o /dev/null -w '%{http_code}' --max-time 30 http://localhost:3001__TRACKED_VAR__)",
+      "Bash(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 http://localhost:3001__TRACKED_VAR__)",
+      "Bash(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 http://localhost:3001/this-page-does-not-exist)",
+      "Bash(curl -sS http://localhost:3001/disciplines/boxing)",
+      "Bash(curl -sS http://localhost:3001/this-page-does-not-exist)"
     ]
   }
 }
