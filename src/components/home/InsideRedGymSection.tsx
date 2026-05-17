@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { SECTION_VIDEOS, VIDEO_POSTERS } from '@/lib/image-map';
 
@@ -11,7 +12,7 @@ const ZONES = [
   },
   {
     title: 'Strength Zone',
-    description: 'Hammer Strength machines, Olympic platforms, free weights. The serious lifter\'s playground in Dubai.',
+    description: "Hammer Strength machines, Olympic platforms, free weights. The serious lifter's playground in Dubai.",
     video: SECTION_VIDEOS.strength,
   },
   {
@@ -20,6 +21,49 @@ const ZONES = [
     video: SECTION_VIDEOS.studio,
   },
 ];
+
+// Plays the clip when scrolled in, pauses when out — preserves battery + iOS quirks.
+function ZoneVideo({ src }: { src: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            video.play().catch(() => {
+              // Autoplay blocked — needs user gesture.
+            });
+          } else {
+            video.pause();
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      src={src}
+      poster={VIDEO_POSTERS.hero}
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      disablePictureInPicture
+      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+    />
+  );
+}
 
 export default function InsideRedGymSection() {
   return (
@@ -53,16 +97,7 @@ export default function InsideRedGymSection() {
               className="group"
             >
               <div className="relative overflow-hidden bg-[#141414] aspect-[9/16] mb-5">
-                <video
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  poster={VIDEO_POSTERS.hero}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                >
-                  <source src={zone.video} type="video/mp4" />
-                </video>
+                <ZoneVideo src={zone.video} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
               </div>
               <h3 className="font-display text-3xl md:text-4xl text-white mb-3 tracking-tight">{zone.title}</h3>

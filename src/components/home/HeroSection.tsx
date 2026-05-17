@@ -1,27 +1,45 @@
 'use client';
 
 import Link from 'next/link';
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { HERO_VIDEO } from '@/lib/image-map';
 import { WHATSAPP_CTA, BRAND } from '@/lib/brand';
 
 export default function HeroSection() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Belt-and-suspenders autoplay: iOS Safari + some in-app browsers (Instagram,
+  // Facebook WebView) don't reliably honour the autoPlay attribute on `<source>`-
+  // child videos. Calling play() explicitly after mount handles them.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const tryPlay = () => {
+      video.play().catch(() => {
+        // Autoplay still blocked — user gesture required, nothing more to do.
+      });
+    };
+    tryPlay();
+  }, []);
+
   return (
     <section className="relative h-screen w-full overflow-hidden bg-black">
       {/* Video background */}
       <div className="absolute inset-0 z-0">
         <video
+          ref={videoRef}
+          src={HERO_VIDEO.mp4}
+          poster={HERO_VIDEO.poster}
           autoPlay
           muted
           loop
           playsInline
-          poster={HERO_VIDEO.poster}
+          preload="auto"
+          disablePictureInPicture
           className="w-full h-full object-cover"
-        >
-          <source src={HERO_VIDEO.webm} type="video/webm" />
-          <source src={HERO_VIDEO.mp4} type="video/mp4" />
-        </video>
+        />
         {/* Overlay gradient — darken bottom for legibility */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/95" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
