@@ -35,7 +35,28 @@
       "Bash(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 http://localhost:3001__TRACKED_VAR__)",
       "Bash(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 http://localhost:3001/this-page-does-not-exist)",
       "Bash(curl -sS http://localhost:3001/disciplines/boxing)",
-      "Bash(curl -sS http://localhost:3001/this-page-does-not-exist)"
+      "Bash(curl -sS http://localhost:3001/this-page-does-not-exist)",
+      "Bash(curl -v --max-time 15 https://red-gym-website.vercel.app/)",
+      "Bash(curl -sI --max-time 15 -A \"Mozilla/5.0 \\(Windows NT 10.0\\) AppleWebKit/537.36 Chrome/120.0.0.0\" https://red-gym-website.vercel.app/)",
+      "Bash(curl -sI --max-time 15 --resolve red-gym-website.vercel.app:443:64.29.17.131 https://red-gym-website.vercel.app/)",
+      "Bash(ping -n 2 216.198.79.131)",
+      "Bash(curl -sI --max-time 10 https://vercel.com/)",
+      "Bash(curl -sI --max-time 12 --http1.1 https://red-gym-website.vercel.app/)",
+      "Bash(curl -sI --max-time 8 -o /dev/null -w '%{http_code}' https://__TRACKED_VAR__/)",
+      "Bash(timeout 10 openssl s_client -connect red-gym-website.vercel.app:443 -servername red-gym-website.vercel.app)",
+      "Bash(curl -kI --max-time 15 https://red-gym-website.vercel.app/)",
+      "Bash(curl -sI --max-time 15 --tlsv1.2 https://red-gym-website.vercel.app/)",
+      "Bash(curl -sL --max-time 20 https://red-gym-website.vercel.app/ -o /tmp/live-homepage.html -w \"HTTP=%{http_code} size=%{size_download}B time=%{time_total}s connect=%{time_connect}s\\\\n\")",
+      "Read(//tmp/**)",
+      "Bash(curl -sI --max-time 30 -o /dev/null -w \"HTTP=%{http_code} | DNS=%{time_namelookup}s | TCP=%{time_connect}s | TLS=%{time_appconnect}s | TTFB=%{time_starttransfer}s | total=%{time_total}s\\\\n\" https://red-gym-website.vercel.app/)",
+      "Bash(curl -sI --max-time 30 -A \"Mozilla/5.0 \\(X11; Linux x86_64\\) AppleWebKit/537.36 Chrome/120\" https://red-gym-website.vercel.app/)",
+      "Bash(curl -sI --max-time 15 -o /dev/null -w \"/disciplines: HTTP=%{http_code} total=%{time_total}s\\\\n\" https://red-gym-website.vercel.app/disciplines)",
+      "Bash(git fetch *)",
+      "Bash(curl -sI --max-time 25 -o /dev/null -w \"HTTP=%{http_code} | TCP=%{time_connect}s | TLS=%{time_appconnect}s | TTFB=%{time_starttransfer}s | total=%{time_total}s\\\\n\" https://red-gym-website.vercel.app/)",
+      "Bash(curl -v --max-time 15 -o /dev/null https://red-gym-website.vercel.app/)",
+      "Bash(timeout 15 openssl s_client -connect red-gym-website.vercel.app:443 -servername red-gym-website.vercel.app -brief)",
+      "Bash(curl -sL --max-time 25 https://red-gym-website.vercel.app/ -o /tmp/live-home.html -w \"HTTP=%{http_code} bytes=%{size_download} time=%{time_total}s connect=%{time_connect}s tls=%{time_appconnect}s ttfb=%{time_starttransfer}s\\\\n\")",
+      "Bash(curl -sL --max-time 25 https://red-gym-website-4neb09mfg-layth-s-projects1.vercel.app/ -o /tmp/live-direct.html -w \"HTTP=%{http_code} bytes=%{size_download} time=%{time_total}s tls=%{time_appconnect}s\\\\n\")"
     ]
   }
 }

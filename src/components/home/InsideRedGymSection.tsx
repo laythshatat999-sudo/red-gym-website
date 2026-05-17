@@ -22,21 +22,37 @@ const ZONES = [
   },
 ];
 
-// Plays the clip when scrolled in, pauses when out — preserves battery + iOS quirks.
+// Plays the clip when scrolled in, pauses when out.
+// First-load autoplay reliability: on cold cache the video isn't buffered when
+// intersection fires, so play() rejects and iOS shows its play-button overlay.
+// We track in-view state in a ref and also retry play() on canplay/loadeddata
+// events so playback kicks in the moment the video has enough data.
 function ZoneVideo({ src }: { src: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const inViewRef = useRef(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
+    const tryPlay = () => {
+      if (!inViewRef.current) return;
+      video.play().catch(() => {
+        // play() rejects if not buffered or autoplay blocked; retry on next
+        // readiness event. Repeated play() on a playing video is a no-op.
+      });
+    };
+
+    video.addEventListener('canplay', tryPlay);
+    video.addEventListener('loadeddata', tryPlay);
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
+          inViewRef.current = entry.isIntersecting;
           if (entry.isIntersecting) {
-            video.play().catch(() => {
-              // Autoplay blocked — needs user gesture.
-            });
+            // Try immediately if already buffered; otherwise canplay will fire.
+            tryPlay();
           } else {
             video.pause();
           }
@@ -46,7 +62,12 @@ function ZoneVideo({ src }: { src: string }) {
     );
 
     observer.observe(video);
-    return () => observer.disconnect();
+
+    return () => {
+      observer.disconnect();
+      video.removeEventListener('canplay', tryPlay);
+      video.removeEventListener('loadeddata', tryPlay);
+    };
   }, []);
 
   return (
@@ -58,7 +79,7 @@ function ZoneVideo({ src }: { src: string }) {
       muted
       loop
       playsInline
-      preload="metadata"
+      preload="auto"
       disablePictureInPicture
       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
     />

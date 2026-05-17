@@ -10,18 +10,36 @@ import { WHATSAPP_CTA, BRAND } from '@/lib/brand';
 export default function HeroSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Belt-and-suspenders autoplay: iOS Safari + some in-app browsers (Instagram,
-  // Facebook WebView) don't reliably honour the autoPlay attribute on `<source>`-
-  // child videos. Calling play() explicitly after mount handles them.
+  // First-load autoplay reliability:
+  // On the very first visit the video element has no buffered data when
+  // useEffect fires, so video.play() rejects silently and iOS shows its
+  // "autoplay blocked" play-button overlay. On revisit the video is browser-
+  // cached and play() succeeds instantly. The fix: also call play() when the
+  // browser fires `canplay`/`loadeddata`, by which point readyState >= 3
+  // (HAVE_FUTURE_DATA) and playback can start.
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+
     const tryPlay = () => {
       video.play().catch(() => {
-        // Autoplay still blocked — user gesture required, nothing more to do.
+        // play() can reject if not yet buffered or autoplay genuinely blocked;
+        // subsequent readiness events will retry, repeated play() on a playing
+        // video is a no-op.
       });
     };
-    tryPlay();
+
+    // If the video is already ready (warm cache), play immediately.
+    if (video.readyState >= 3) tryPlay();
+
+    // Retry on every readiness signal (covers the first-load cold path).
+    video.addEventListener('canplay', tryPlay);
+    video.addEventListener('loadeddata', tryPlay);
+
+    return () => {
+      video.removeEventListener('canplay', tryPlay);
+      video.removeEventListener('loadeddata', tryPlay);
+    };
   }, []);
 
   return (
