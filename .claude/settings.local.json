@@ -14,7 +14,10 @@
       "Bash(curl -sS -o /dev/null -w \"  /images/disciplines/parking.webp → HTTP %{http_code}\\\\n\" http://localhost:3000/images/disciplines/parking.webp)",
       "Bash(curl -sS -o /dev/null -w \"  /images/disciplines/offers.webp  → HTTP %{http_code}\\\\n\" http://localhost:3000/images/disciplines/offers.webp)",
       "Bash(curl -sS -o /dev/null -w \"  GET / → HTTP %{http_code}\\\\n\" --max-time 5 http://localhost:3000/)",
-      "Bash(curl -sS -o /dev/null -w '  __TRACKED_VAR__ → HTTP %{http_code}  size=%{size_download}B\\\\n' --max-time 10 http://localhost:3000__TRACKED_VAR__)"
+      "Bash(curl -sS -o /dev/null -w '  __TRACKED_VAR__ → HTTP %{http_code}  size=%{size_download}B\\\\n' --max-time 10 http://localhost:3000__TRACKED_VAR__)",
+      "Bash(curl -sS -o /dev/null -w '  %{http_code}  %{time_total}s  __TRACKED_VAR__\\\\n' --max-time 15 http://localhost:3000__TRACKED_VAR__)",
+      "Bash(curl -sS -o /dev/null -w \"  /videos/sections/studio-rental.mp4         → HTTP %{http_code}  size=%{size_download}B\\\\n\" \"http://localhost:3000/videos/sections/studio-rental.mp4\")",
+      "Bash(curl -sS -o /dev/null -w \"  /videos/posters/studio-rental-poster.webp   → HTTP %{http_code}  size=%{size_download}B\\\\n\" \"http://localhost:3000/videos/posters/studio-rental-poster.webp\")"
     ]
   }
 }
