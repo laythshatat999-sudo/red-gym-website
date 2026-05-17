@@ -20,36 +20,78 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Red Gym — Dubai's Premier Combat Sports & Fitness Facility",
+  metadataBase: new URL('https://redfit.ae'),
+  title: {
+    default: 'Red Gym — Combat Sports & Fitness in Barsha Heights, Dubai',
+    template: '%s | Red Gym Dubai',
+  },
   description:
-    "Red Gym in Barsha Heights, Dubai. 25,000 sqft of combat sports, premium strength training, and 11+ fitness classes.",
-  metadataBase: new URL("https://redfit.ae"),
+    'Red Gym is a 25,000 sqft combat sports and fitness facility in Vista Tower, Barsha Heights, Dubai. 11+ class types. Open 6 AM to 11 PM daily.',
+  applicationName: 'Red Gym',
+  keywords: [
+    'Red Gym',
+    'Dubai gym',
+    'Barsha Heights gym',
+    'Vista Tower gym',
+    'combat sports Dubai',
+    'MMA Dubai',
+    'boxing Dubai',
+    'BJJ Dubai',
+    'Muay Thai Dubai',
+    'CrossFit Dubai',
+    'yoga Dubai',
+  ],
+  authors: [{ name: 'Red Gym' }],
+  creator: 'Red Gym',
+  publisher: 'Red Gym',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: true,
+  },
   icons: {
     icon: '/favicon-32.png',
     apple: '/apple-touch-icon.png',
   },
   openGraph: {
-    type: "website",
-    locale: "en_AE",
-    url: "https://redfit.ae",
-    siteName: "Red Gym",
-    title: "Red Gym — Dubai's Premier Combat Sports & Fitness Facility",
+    type: 'website',
+    locale: 'en_AE',
+    url: 'https://redfit.ae',
+    siteName: 'Red Gym',
+    title: 'Red Gym — Combat Sports & Fitness in Barsha Heights, Dubai',
     description:
-      "25,000 sqft of combat sports, premium strength training, and 11+ fitness classes in Barsha Heights, Dubai.",
+      'Red Gym is a 25,000 sqft combat sports and fitness facility in Vista Tower, Barsha Heights, Dubai. 11+ class types. Open 6 AM to 11 PM daily.',
     images: [
       {
         url: '/images/og/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'Red Gym Dubai',
+        alt: 'Red Gym — Dubai combat sports and fitness facility',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Red Gym Dubai",
-    description: "Combat sports, strength training, and 11+ fitness classes.",
+    title: 'Red Gym — Dubai Combat Sports & Fitness',
+    description: '25,000 sqft. 11+ class types. Real coaches. Vista Tower, Barsha Heights.',
     images: ['/images/og/og-image.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: 'https://redfit.ae',
+  },
+  verification: {
+    // google: 'GOOGLE_SITE_VERIFICATION_CODE',  // Add when Search Console is set up
   },
 };
 

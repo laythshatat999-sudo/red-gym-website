@@ -23,7 +23,12 @@
       "Bash(curl -sS \"http://localhost:3000/disciplines/yoga\")",
       "Bash(curl -sS \"http://localhost:3000/disciplines/hiit\")",
       "Bash(curl -sS -o /dev/null -w \"GET /classes → HTTP %{http_code} in %{time_total}s\\\\n\" --max-time 15 http://localhost:3000/classes)",
-      "Bash(curl -sS http://localhost:3000/classes)"
+      "Bash(curl -sS http://localhost:3000/classes)",
+      "Bash(curl -sS http://localhost:3000/sitemap.xml)",
+      "Bash(curl -sS http://localhost:3000/robots.txt)",
+      "Bash(curl -sS http://localhost:3000/llms.txt)",
+      "Bash(curl -sS http://localhost:3000/)",
+      "Bash(curl -sS http://localhost:3000/disciplines/boxing)"
     ]
   }
 }
