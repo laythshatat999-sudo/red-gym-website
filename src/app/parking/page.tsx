@@ -6,7 +6,7 @@ import { DISCIPLINES } from '@/lib/image-map';
 export const metadata: Metadata = {
   title: 'Free Parking — Red Gym Members in Barsha Heights, Dubai',
   description:
-    'Red Gym members get complimentary parking inside Vista Tower, Al Thuraya Street. A real Dubai luxury — no validation, no time limit.',
+    'Red Gym members get complimentary parking inside Vista Tower, Al Thuraya Street. A real Dubai luxury — no validation needed.',
 };
 
 export default function ParkingPage() {
@@ -21,7 +21,7 @@ export default function ParkingPage() {
             <span className="text-[#E11D2A]">Walk straight in.</span>
           </>
         }
-        subtitle="Every Red Gym member parks for free inside Vista Tower — directly below the gym. No validation. No time limit. No fighting Barsha Heights traffic for a street spot."
+        subtitle="Every Red Gym member parks for free inside Vista Tower — directly below the gym. No validation. No fighting Barsha Heights traffic for a street spot."
         backgroundImage={DISCIPLINES.parking}
       />
 
