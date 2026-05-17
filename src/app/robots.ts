@@ -1,5 +1,9 @@
 import type { MetadataRoute } from 'next';
 
+// Next 16+ requires this on metadata routes for static export builds (Cloudflare
+// Pages). No-op on Vercel — this route is already inferred as static there.
+export const dynamic = 'force-static';
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [

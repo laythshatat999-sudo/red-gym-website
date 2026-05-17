@@ -1,5 +1,9 @@
 import type { MetadataRoute } from 'next';
 
+// Next 16+ requires this on metadata routes for static export builds (Cloudflare
+// Pages). No-op on Vercel — these routes are already inferred as static there.
+export const dynamic = 'force-static';
+
 const BASE_URL = 'https://redfit.ae';
 
 // Route priority guide:
