@@ -1,7 +1,9 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { SECTION_VIDEOS, VIDEO_POSTERS } from '@/lib/image-map';
+import { useEngagement } from '@/lib/useEngagement';
 
 const ZONES = [
   {
@@ -21,13 +23,13 @@ const ZONES = [
   },
 ];
 
-// Pure native autoplay — no JS play() calls, no IntersectionObserver.
-// Videos are encoded with iOS-friendly H.264 (Main profile, 30fps, faststart).
-// Phase 6.1/6.2 attempted to coax iOS Safari's autoplay heuristic with imperative
-// play() and event listeners; those interfered with the heuristic and made things
-// worse. Trust the native autoplay attribute combo: autoPlay + muted + playsInline.
-// Three muted clips totaling ~2.3MB autoplay reliably on every modern mobile browser.
+// iOS first-paint autoplay is unreliable (see HeroSection comment + Phase 7).
+// These videos are below the fold, so by the time they enter the viewport the
+// user has already scrolled — useEngagement() returns true and the <video>
+// elements mount with autoplay working. On first paint they render as poster
+// images (no overlay, no DOM <video> for iOS to refuse to play).
 export default function InsideRedGymSection() {
+  const engaged = useEngagement();
   return (
     <section className="bg-[#0A0A0A] py-24 md:py-40 border-t border-white/5">
       <div className="max-w-7xl mx-auto px-5 md:px-8">
@@ -59,17 +61,27 @@ export default function InsideRedGymSection() {
               className="group"
             >
               <div className="relative overflow-hidden bg-[#141414] aspect-[9/16] mb-5">
-                <video
-                  src={zone.video}
-                  poster={VIDEO_POSTERS.hero}
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="auto"
-                  disablePictureInPicture
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                {engaged ? (
+                  <video
+                    src={zone.video}
+                    poster={VIDEO_POSTERS.hero}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    disablePictureInPicture
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  <Image
+                    src={VIDEO_POSTERS.hero}
+                    alt={zone.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
               </div>
               <h3 className="font-display text-3xl md:text-4xl text-white mb-3 tracking-tight">{zone.title}</h3>

@@ -1,32 +1,48 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { HERO_VIDEO } from '@/lib/image-map';
 import { WHATSAPP_CTA, BRAND } from '@/lib/brand';
+import { useEngagement } from '@/lib/useEngagement';
 
 export default function HeroSection() {
-  // Pure native autoplay — no JS play() calls. The video file is encoded with
-  // iOS-friendly H.264 (Main profile, level 3.1, 30fps, faststart). With
-  // autoPlay + muted + playsInline + preload="auto" attributes, iOS Safari
-  // autoplays reliably on first load. Imperative video.play() calls were
-  // previously interfering with Safari's autoplay heuristic.
+  // iOS Safari refuses to autoplay <video> elements that mount on first paint
+  // before the user has engaged with the origin (Phase 6.1/6.2/6.3 all tried
+  // and failed to coax it). Instead: render the poster image on first paint,
+  // swap to <video autoPlay> after the first user gesture (touch/scroll/click).
+  // Persisted via sessionStorage so navigating between pages keeps videos live.
+  // Subsequent visits within the same session mount <video> immediately.
+  const engaged = useEngagement();
+
   return (
     <section className="relative h-screen w-full overflow-hidden bg-black">
-      {/* Video background */}
+      {/* Video / poster background */}
       <div className="absolute inset-0 z-0">
-        <video
-          src={HERO_VIDEO.mp4}
-          poster={HERO_VIDEO.poster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          disablePictureInPicture
-          className="w-full h-full object-cover"
-        />
+        {engaged ? (
+          <video
+            src={HERO_VIDEO.mp4}
+            poster={HERO_VIDEO.poster}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <Image
+            src={HERO_VIDEO.poster}
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+        )}
         {/* Overlay gradient — darken bottom for legibility */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/95" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
