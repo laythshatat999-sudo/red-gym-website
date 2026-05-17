@@ -19,7 +19,9 @@
       "Bash(curl -sS -o /dev/null -w \"  /videos/sections/studio-rental.mp4         → HTTP %{http_code}  size=%{size_download}B\\\\n\" \"http://localhost:3000/videos/sections/studio-rental.mp4\")",
       "Bash(curl -sS -o /dev/null -w \"  /videos/posters/studio-rental-poster.webp   → HTTP %{http_code}  size=%{size_download}B\\\\n\" \"http://localhost:3000/videos/posters/studio-rental-poster.webp\")",
       "Bash(curl -sS -o /dev/null -w '  __TRACKED_VAR__ → HTTP %{http_code}  time=%{time_total}s\\\\n' --max-time 15 http://localhost:3000__TRACKED_VAR__)",
-      "Bash(curl -sS http://localhost:3000__TRACKED_VAR__)"
+      "Bash(curl -sS http://localhost:3000__TRACKED_VAR__)",
+      "Bash(curl -sS \"http://localhost:3000/disciplines/yoga\")",
+      "Bash(curl -sS \"http://localhost:3000/disciplines/hiit\")"
     ]
   }
 }
