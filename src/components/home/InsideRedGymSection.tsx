@@ -6,17 +6,17 @@ import { SECTION_VIDEOS, VIDEO_POSTERS } from '@/lib/image-map';
 const ZONES = [
   {
     title: 'Combat Zone',
-    description: 'Heavy bags, training mats, professional coaches. The heart of Red Gym.',
+    description: 'Heavy bags, training mats, professional coaches. Boxing, MMA, BJJ, Muay Thai — built for fighters.',
     video: SECTION_VIDEOS.combat,
   },
   {
     title: 'Strength Zone',
-    description: 'Hammer Strength machines, free weights, functional rigs. Built for serious lifters.',
+    description: 'Hammer Strength machines, Olympic platforms, free weights. The serious lifter\'s playground in Dubai.',
     video: SECTION_VIDEOS.strength,
   },
   {
     title: 'Studio Floor',
-    description: 'Pink-neon yoga studios, spin rooms, and class spaces. Every vibe, every discipline.',
+    description: 'Yoga, Spinning, Zumba, HIIT. 11+ classes daily under neon-lit ceilings.',
     video: SECTION_VIDEOS.studio,
   },
 ];

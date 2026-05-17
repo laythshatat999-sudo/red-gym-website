@@ -1,9 +1,10 @@
 import { execSync } from 'child_process';
 import { existsSync, mkdirSync } from 'fs';
 
-// Source file names mapped to actual files in source-assets/videos/
-const SOURCE_HERO = 'source-assets/videos/hero/hero-source-46s.mp4';
-const SOURCE_STUDIO = 'source-assets/videos/studio-rental/red rent.mp4';
+// Source files
+const SOURCE_HERO_NEW = 'source-assets/videos/hero/hero-source-46s.mp4';   // 15s, for hero loop + studio clip
+const SOURCE_HERO_OLD = 'source-assets/videos/hero/hero-source-old.mp4';   // 46s, for strength + combat clips
+const SOURCE_STUDIO = 'source-assets/videos/studio-rental/red rent.mp4';   // standalone, untouched
 
 function ensureDir(dir) {
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
@@ -20,29 +21,32 @@ ensureDir('public/videos/hero');
 ensureDir('public/videos/sections');
 ensureDir('public/videos/posters');
 
-// === HERO VIDEO: 15s source, full duration used for loop ===
-if (existsSync(SOURCE_HERO)) {
-  console.log('📹 Hero loop (mobile, 15s, optimized)...');
-  run(`ffmpeg -y -i "${SOURCE_HERO}" -vcodec libx264 -crf 30 -preset slow -vf "scale=540:960:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/hero/hero-loop-mobile.mp4"`);
+// === HERO LOOP (mobile + WebM fallback) — from NEW 15s video ===
+if (existsSync(SOURCE_HERO_NEW)) {
+  console.log('📹 Hero loop mp4 (mobile, full 15s, ~540×960)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO_NEW}" -vcodec libx264 -crf 30 -preset slow -vf "scale=540:960:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/hero/hero-loop-mobile.mp4"`);
 
-  console.log('📹 Hero loop (WebM fallback)...');
-  run(`ffmpeg -y -i "${SOURCE_HERO}" -c:v libvpx-vp9 -crf 35 -b:v 0 -vf "scale=540:960:flags=lanczos" -an -row-mt 1 "public/videos/hero/hero-loop-mobile.webm"`);
+  console.log('📹 Hero loop webm (VP9 fallback)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO_NEW}" -c:v libvpx-vp9 -crf 35 -b:v 0 -vf "scale=540:960:flags=lanczos" -an -row-mt 1 "public/videos/hero/hero-loop-mobile.webm"`);
 
-  console.log('🖼️  Hero poster image...');
-  run(`ffmpeg -y -i "${SOURCE_HERO}" -ss 00:00:01 -vframes 1 -vf "scale=720:1280" -q:v 90 "public/videos/posters/hero-poster.webp"`);
+  console.log('🖼️  Hero poster image (frame at 0:01)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO_NEW}" -ss 00:00:01 -vframes 1 -vf "scale=720:1280" -q:v 90 "public/videos/posters/hero-poster.webp"`);
 
-  // Section clips — split the 15s source into three ~5s segments.
-  // Filenames stay strength/combat/studio so image-map.ts continues to resolve.
-  console.log('📹 Section: Strength Zone (0:00-0:05)...');
-  run(`ffmpeg -y -i "${SOURCE_HERO}" -ss 00:00:00 -t 5 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-strength.mp4"`);
-
-  console.log('📹 Section: Combat Zone (0:05-0:10)...');
-  run(`ffmpeg -y -i "${SOURCE_HERO}" -ss 00:00:05 -t 5 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-combat.mp4"`);
-
-  console.log('📹 Section: Studio Classes (0:10-0:15)...');
-  run(`ffmpeg -y -i "${SOURCE_HERO}" -ss 00:00:10 -t 5 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-studio.mp4"`);
+  console.log('📹 Section: Studio Floor (0:13-0:15, yoga class with teal neon, 2s)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO_NEW}" -ss 00:00:13 -t 2 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-studio.mp4"`);
 } else {
-  console.warn('⚠️  Hero source video not found, skipping hero processing');
+  console.warn('⚠️  hero-source-46s.mp4 not found, skipping hero + studio processing');
+}
+
+// === SECTION CLIPS (Strength + Combat) — from OLD 46s video ===
+if (existsSync(SOURCE_HERO_OLD)) {
+  console.log('📹 Section: Strength Zone (0:08-0:14, Hammer Strength wide shot, 6s)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO_OLD}" -ss 00:00:08 -t 6 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-strength.mp4"`);
+
+  console.log('📹 Section: Combat Zone (0:36-0:42, heavy bags + red mat, 6s)...');
+  run(`ffmpeg -y -i "${SOURCE_HERO_OLD}" -ss 00:00:36 -t 6 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-combat.mp4"`);
+} else {
+  console.warn('⚠️  hero-source-old.mp4 not found, skipping strength + combat sections');
 }
 
 // === STUDIO RENTAL VIDEO ===
