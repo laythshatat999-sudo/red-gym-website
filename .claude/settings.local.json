@@ -21,7 +21,9 @@
       "Bash(curl -sS -o /dev/null -w '  __TRACKED_VAR__ → HTTP %{http_code}  time=%{time_total}s\\\\n' --max-time 15 http://localhost:3000__TRACKED_VAR__)",
       "Bash(curl -sS http://localhost:3000__TRACKED_VAR__)",
       "Bash(curl -sS \"http://localhost:3000/disciplines/yoga\")",
-      "Bash(curl -sS \"http://localhost:3000/disciplines/hiit\")"
+      "Bash(curl -sS \"http://localhost:3000/disciplines/hiit\")",
+      "Bash(curl -sS -o /dev/null -w \"GET /classes → HTTP %{http_code} in %{time_total}s\\\\n\" --max-time 15 http://localhost:3000/classes)",
+      "Bash(curl -sS http://localhost:3000/classes)"
     ]
   }
 }
