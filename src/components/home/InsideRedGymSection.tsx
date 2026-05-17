@@ -16,7 +16,7 @@ const ZONES = [
   },
   {
     title: 'Studio Floor',
-    description: 'Yoga, Spinning, Zumba, HIIT. 11+ classes daily under neon-lit ceilings.',
+    description: 'Cinematic spaces designed for movement. Boxing gloves, yoga mats, spin bikes — every discipline has its home.',
     video: SECTION_VIDEOS.studio,
   },
 ];

@@ -31,11 +31,8 @@ if (existsSync(SOURCE_HERO_NEW)) {
 
   console.log('🖼️  Hero poster image (frame at 0:01)...');
   run(`ffmpeg -y -i "${SOURCE_HERO_NEW}" -ss 00:00:01 -vframes 1 -vf "scale=720:1280" -q:v 90 "public/videos/posters/hero-poster.webp"`);
-
-  console.log('📹 Section: Studio Floor (0:13-0:15, yoga class with teal neon, 2s)...');
-  run(`ffmpeg -y -i "${SOURCE_HERO_NEW}" -ss 00:00:13 -t 2 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-studio.mp4"`);
 } else {
-  console.warn('⚠️  hero-source-46s.mp4 not found, skipping hero + studio processing');
+  console.warn('⚠️  hero-source-46s.mp4 not found, skipping hero processing');
 }
 
 // === SECTION CLIPS (Strength + Combat) — from OLD 46s video ===
@@ -49,22 +46,27 @@ if (existsSync(SOURCE_HERO_OLD)) {
   console.warn('⚠️  hero-source-old.mp4 not found, skipping strength + combat sections');
 }
 
-// === STUDIO RENTAL VIDEO ===
-// Skip re-encode when both outputs already exist (cheap idempotence guard).
-const studioOutputsExist =
-  existsSync('public/videos/sections/studio-rental.mp4') &&
-  existsSync('public/videos/posters/studio-rental-poster.webp');
-
+// === STUDIO-RENTAL SOURCE — drives inside-studio.mp4 AND studio-rental.mp4 ===
 if (!existsSync(SOURCE_STUDIO)) {
   console.warn('⚠️  Studio rental source video not found, skipping');
-} else if (studioOutputsExist) {
-  console.log('⏭️  Studio Rental outputs already exist — skipping re-encode.');
 } else {
-  console.log('📹 Studio Rental video...');
-  run(`ffmpeg -y -i "${SOURCE_STUDIO}" -vcodec libx264 -crf 30 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/studio-rental.mp4"`);
+  // Always-run: short InsideRedGym studio-floor clip (cheap re-encode).
+  console.log('📹 Section: Studio Floor (0:22-0:26, big R logo + heavy bags, 4s)...');
+  run(`ffmpeg -y -i "${SOURCE_STUDIO}" -ss 00:00:22 -t 4 -vcodec libx264 -crf 32 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/inside-studio.mp4"`);
 
-  console.log('🖼️  Studio Rental poster...');
-  run(`ffmpeg -y -i "${SOURCE_STUDIO}" -ss 00:00:01 -vframes 1 -vf "scale=720:1280" -q:v 90 "public/videos/posters/studio-rental-poster.webp"`);
+  // Skip guard for the large 30s Studio Rental page asset (expensive).
+  const studioOutputsExist =
+    existsSync('public/videos/sections/studio-rental.mp4') &&
+    existsSync('public/videos/posters/studio-rental-poster.webp');
+  if (studioOutputsExist) {
+    console.log('⏭️  Studio Rental large outputs already exist — skipping re-encode.');
+  } else {
+    console.log('📹 Studio Rental video (full ~30s)...');
+    run(`ffmpeg -y -i "${SOURCE_STUDIO}" -vcodec libx264 -crf 30 -preset slow -vf "scale=720:1280:flags=lanczos" -an -movflags +faststart -pix_fmt yuv420p "public/videos/sections/studio-rental.mp4"`);
+
+    console.log('🖼️  Studio Rental poster...');
+    run(`ffmpeg -y -i "${SOURCE_STUDIO}" -ss 00:00:01 -vframes 1 -vf "scale=720:1280" -q:v 90 "public/videos/posters/studio-rental-poster.webp"`);
+  }
 }
 
 console.log('\n✅ Video processing complete');
