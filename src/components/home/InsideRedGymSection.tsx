@@ -1,9 +1,10 @@
 'use client';
 
 import Image from 'next/image';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { SECTION_VIDEOS, VIDEO_POSTERS } from '@/lib/image-map';
-import { useEngagement } from '@/lib/useEngagement';
+import { useEngagement, useGesturePlay } from '@/lib/useEngagement';
 
 const ZONES = [
   {
@@ -23,13 +24,46 @@ const ZONES = [
   },
 ];
 
-// iOS first-paint autoplay is unreliable (see HeroSection comment + Phase 7).
-// These videos are below the fold, so by the time they enter the viewport the
-// user has already scrolled — useEngagement() returns true and the <video>
-// elements mount with autoplay working. On first paint they render as poster
-// images (no overlay, no DOM <video> for iOS to refuse to play).
-export default function InsideRedGymSection() {
+// Per-zone video + poster overlay. The wrapper div in the map below sets the
+// aspect ratio + clip; this component fills it with the layered stack.
+// See HeroSection / useEngagement comments for the autoplay strategy.
+function ZoneVideo({ src, title }: { src: string; title: string }) {
   const engaged = useEngagement();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+  useGesturePlay(videoRef);
+
+  return (
+    <>
+      {engaged && (
+        <video
+          ref={videoRef}
+          src={src}
+          poster={VIDEO_POSTERS.hero}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          disablePictureInPicture
+          onPlaying={() => setPlaying(true)}
+          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+      )}
+      {!playing && (
+        <Image
+          src={VIDEO_POSTERS.hero}
+          alt={title}
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+        />
+      )}
+    </>
+  );
+}
+
+export default function InsideRedGymSection() {
   return (
     <section className="bg-[#0A0A0A] py-24 md:py-40 border-t border-white/5">
       <div className="max-w-7xl mx-auto px-5 md:px-8">
@@ -61,27 +95,7 @@ export default function InsideRedGymSection() {
               className="group"
             >
               <div className="relative overflow-hidden bg-[#141414] aspect-[9/16] mb-5">
-                {engaged ? (
-                  <video
-                    src={zone.video}
-                    poster={VIDEO_POSTERS.hero}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="auto"
-                    disablePictureInPicture
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                ) : (
-                  <Image
-                    src={VIDEO_POSTERS.hero}
-                    alt={zone.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                )}
+                <ZoneVideo src={zone.video} title={zone.title} />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
               </div>
               <h3 className="font-display text-3xl md:text-4xl text-white mb-3 tracking-tight">{zone.title}</h3>

@@ -2,27 +2,35 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { HERO_VIDEO } from '@/lib/image-map';
 import { WHATSAPP_CTA, BRAND } from '@/lib/brand';
-import { useEngagement } from '@/lib/useEngagement';
+import { useEngagement, useGesturePlay } from '@/lib/useEngagement';
 
 export default function HeroSection() {
-  // iOS Safari refuses to autoplay <video> elements that mount on first paint
-  // before the user has engaged with the origin (Phase 6.1/6.2/6.3 all tried
-  // and failed to coax it). Instead: render the poster image on first paint,
-  // swap to <video autoPlay> after the first user gesture (touch/scroll/click).
-  // Persisted via sessionStorage so navigating between pages keeps videos live.
-  // Subsequent visits within the same session mount <video> immediately.
+  // Two-layer autoplay flow (see useEngagement.ts comment for the full story).
+  // Render the poster image immediately. After ~400ms the auto-engagement
+  // timer mounts the <video> underneath. When the browser fires `playing`
+  // (i.e. the video has actually started rendering frames), we unmount the
+  // poster — clean swap. If iOS refused the timer-triggered autoplay, the
+  // useGesturePlay hook retries video.play() inside the next user gesture
+  // handler, which iOS allows.
   const engaged = useEngagement();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+  useGesturePlay(videoRef);
 
   return (
     <section className="relative h-screen w-full overflow-hidden bg-black">
-      {/* Video / poster background */}
+      {/* Video / poster background.
+          Source order = paint order (children all absolute, no z-index):
+            video (base) → poster (covers video until onPlaying) → gradients on top. */}
       <div className="absolute inset-0 z-0">
-        {engaged ? (
+        {engaged && (
           <video
+            ref={videoRef}
             src={HERO_VIDEO.mp4}
             poster={HERO_VIDEO.poster}
             autoPlay
@@ -31,9 +39,11 @@ export default function HeroSection() {
             playsInline
             preload="auto"
             disablePictureInPicture
-            className="w-full h-full object-cover"
+            onPlaying={() => setPlaying(true)}
+            className="absolute inset-0 w-full h-full object-cover"
           />
-        ) : (
+        )}
+        {!playing && (
           <Image
             src={HERO_VIDEO.poster}
             alt=""
@@ -43,7 +53,7 @@ export default function HeroSection() {
             className="object-cover"
           />
         )}
-        {/* Overlay gradient — darken bottom for legibility */}
+        {/* Overlay gradients — darken bottom for legibility */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/95" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent" />
       </div>
